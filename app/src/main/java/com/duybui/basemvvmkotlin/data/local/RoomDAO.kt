@@ -4,7 +4,7 @@ import androidx.room.Dao
 import androidx.room.Query
 
 @Dao
-interface UserDAO {
+interface RoomDAO {
     @Query("Select * from UserSchema")
     fun getUserList(): List<UserSchema>
 }

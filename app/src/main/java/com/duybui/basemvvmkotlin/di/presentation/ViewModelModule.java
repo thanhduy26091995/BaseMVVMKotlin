@@ -1,20 +1,20 @@
 package com.duybui.basemvvmkotlin.di.presentation;
 
-import android.app.Application;
 import androidx.lifecycle.ViewModel;
-import com.duybui.basemvvmkotlin.ui.base.ViewModelFactory;
-import com.duybui.basemvvmkotlin.ui.users.UserViewModel;
-import dagger.MapKey;
-import dagger.Module;
-import dagger.Provides;
-import dagger.multibindings.IntoMap;
 
-import javax.inject.Provider;
+import com.duybui.basemvvmkotlin.ui.base.ViewModelFactory;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.util.Map;
+
+import javax.inject.Provider;
+
+import dagger.MapKey;
+import dagger.Module;
+import dagger.Provides;
 
 @Module
 public class ViewModelModule {
@@ -31,10 +31,10 @@ public class ViewModelModule {
         return new ViewModelFactory(providerMap);
     }
 
-    @Provides
-    @IntoMap
-    @ViewModelKey(UserViewModel.class)
-    ViewModel userViewModel(Application application) {
-        return new UserViewModel(application);
-    }
+//    @Provides
+//    @IntoMap
+//    @ViewModelKey(UserViewModel.class)
+//    ViewModel userViewModel(Application application) {
+//        return new UserViewModel(application);
+//    }
 }

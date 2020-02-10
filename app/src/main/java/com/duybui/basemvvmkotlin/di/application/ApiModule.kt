@@ -2,7 +2,9 @@ package com.duybui.basemvvmkotlin.di.application
 
 
 import android.app.Application
+import com.duybui.basemvvmkotlin.data.local.RoomDAO
 import com.duybui.basemvvmkotlin.data.network.ApiInterface
+import com.duybui.basemvvmkotlin.data.repo.DataRepository
 import com.duybui.basemvvmkotlin.utils.AppConstants
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -64,4 +66,11 @@ class ApiModule {
     internal fun getAPIInterface(retrofit: Retrofit): ApiInterface {
         return retrofit.create(ApiInterface::class.java)
     }
+
+//    @Singleton
+//    @Provides
+//    fun getDataRepository(apiInterface: ApiInterface, roomDAO: RoomDAO): DataRepository {
+//        return DataRepository(apiInterface, roomDAO)
+//    }
+
 }
