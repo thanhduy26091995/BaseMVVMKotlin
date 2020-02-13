@@ -15,6 +15,10 @@ class UserViewModel(val dataRepository: DataRepository) : BaseViewModel() {
         return dataRepository.getUsers(number)
     }
 
+    fun getRandomUserWithLocal(number: Int): LiveData<Result<List<User>>> {
+        return dataRepository.getUsersWithLocal(number)
+    }
+
     override fun onCleared() {
         super.onCleared()
     }

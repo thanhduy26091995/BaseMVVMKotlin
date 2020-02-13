@@ -52,18 +52,31 @@ class MainActivity : BaseActivity() {
             redditPostsAdapter.submitList(it)
         })
 
-       userViewModel.getRandomUser(10).observe(this, Observer {
-           when (it.status){
-               NetworkState.SUCCESS -> {
-                   userAdapter.setData(it?.data?.data)
-                   userAdapter.notifyDataSetChanged()
-                   println(it.data?.data?.size)
-               }
-               NetworkState.FAIL -> {
-                   ServerErrorDialogFragment.newInstance(null, it.message).show(supportFragmentManager, "Error")
-               }
-           }
-       })
+//       userViewModel.getRandomUser(10).observe(this, Observer {
+//           when (it.status){
+//               NetworkState.SUCCESS -> {
+//                   userAdapter.setData(it?.data?.data)
+//                   userAdapter.notifyDataSetChanged()
+//                   println(it.data?.data?.size)
+//               }
+//               NetworkState.FAIL -> {
+//                   ServerErrorDialogFragment.newInstance(null, it.message).show(supportFragmentManager, "Error")
+//               }
+//           }
+//       })
+
+        userViewModel.getRandomUserWithLocal(10).observe(this, Observer {
+            when (it.status) {
+                NetworkState.SUCCESS -> {
+                    userAdapter.setData(it?.data)
+                    userAdapter.notifyDataSetChanged()
+                }
+                NetworkState.FAIL -> {
+                    ServerErrorDialogFragment.newInstance(null, it.message)
+                        .show(supportFragmentManager, "Error")
+                }
+            }
+        })
 
 //        redditViewModel.networkState?.observe(this, Observer {
 //            println(it.toString())

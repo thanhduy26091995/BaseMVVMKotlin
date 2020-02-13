@@ -7,6 +7,7 @@ import com.duybui.basemvvmkotlin.data.datasource.PostsDataSourceFactory
 import com.duybui.basemvvmkotlin.data.datasource.PostsRemoteDataSource
 import com.duybui.basemvvmkotlin.data.local.RoomDAO
 import com.duybui.basemvvmkotlin.data.model.RedditPost
+import com.duybui.basemvvmkotlin.data.network.resultLiveData
 import com.duybui.basemvvmkotlin.data.network.resultLiveDataWithoutLocal
 import com.duybui.basemvvmkotlin.utils.pagedListConfig
 import kotlinx.coroutines.CoroutineScope
@@ -31,5 +32,11 @@ class DataRepository(val postsRemoteDataSource: PostsRemoteDataSource, val roomD
 
     fun getUsers(results: Int) =
         resultLiveDataWithoutLocal(networkCall = { postsRemoteDataSource.getRandomUser(results) })
+
+    fun getUsersWithLocal(results: Int) = resultLiveData(
+        databaseQuery = { roomDAO.getUserList() },
+        networkCall = { postsRemoteDataSource.getRandomUser(results) },
+        saveCallResult = { roomDAO.insertAll(it.data) }
+    )
 
 }
