@@ -1,20 +1,21 @@
 package com.duybui.basemvvmkotlin.data.datasource
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PageKeyedDataSource
 import com.duybui.basemvvmkotlin.data.model.RedditPost
 import com.duybui.basemvvmkotlin.data.network.NetworkState
-import com.duybui.basemvvmkotlin.data.repo.DataRepository
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 
-class PostsDataSource(val dataRepository: DataRepository, val scope: CoroutineScope) :
+class PostsDataSource(val postsRemoteDataSource: PostsRemoteDataSource, val scope: CoroutineScope) :
     PageKeyedDataSource<String, RedditPost>() {
 
     //TODO
     //https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/-supervisor-job.html
     private var supervisorJob = SupervisorJob()
-    private val networkState = MutableLiveData<NetworkState>()
+    private val errorMessage = MutableLiveData<String>()
 
 
     private fun executeQuery(
@@ -23,22 +24,23 @@ class PostsDataSource(val dataRepository: DataRepository, val scope: CoroutineSc
         after: String?,
         callback: (List<RedditPost>, String?, String?) -> Unit
     ) {
-        networkState.postValue(NetworkState.RUNNING)
         scope.launch(getJobErrorHandle() + supervisorJob) {
-            val data = dataRepository.getPosts(loadSize, after, before)
-            networkState.postValue(NetworkState.SUCCESS)
-            if (data.isSuccessful) {
-                val listing = data.body()?.data
+            val data = postsRemoteDataSource.getPosts(loadSize, after, before)
+            if (data.status == NetworkState.SUCCESS) {
+                val result = data.data
+                val listing = result?.data
                 val reeditPosts = listing?.children?.map { values ->
                     values.data
                 }
                 callback(reeditPosts ?: listOf(), listing?.before, listing?.after)
+            } else if (data.status == NetworkState.FAIL) {
+                errorMessage.postValue(data.message)
             }
         }
     }
 
-    private fun getJobErrorHandle() = CoroutineExceptionHandler { _, _ ->
-        networkState.value = NetworkState.FAIL
+    private fun getJobErrorHandle() = CoroutineExceptionHandler { _, error ->
+        print(error.message)
     }
 
     override fun loadInitial(
@@ -65,11 +67,11 @@ class PostsDataSource(val dataRepository: DataRepository, val scope: CoroutineSc
         }
     }
 
-    fun getNetworkState(): LiveData<NetworkState> =
-        networkState
+    fun getErrorMessage(): MutableLiveData<String> =
+        errorMessage
 
-    fun saveRedditPosts(redditPost: RedditPost){
-        scope.launch(getJobErrorHandle() + supervisorJob){
+    fun saveRedditPosts(redditPost: RedditPost) {
+        scope.launch(getJobErrorHandle() + supervisorJob) {
             redditPost
         }
     }

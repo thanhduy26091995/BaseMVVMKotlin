@@ -9,7 +9,7 @@ import retrofit2.http.Query
 
 interface ApiInterface {
     @GET("/api")
-    suspend fun getRandomUser(@Query("results") results: Int): BaseResponseObject<List<User>>
+    suspend fun getRandomUser(@Query("results") results: Int): Response<BaseResponseObject<List<User>>>
 
     @GET("/r/aww/hot.json")
     suspend fun fetchPosts(

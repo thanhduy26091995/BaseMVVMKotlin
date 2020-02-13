@@ -1,38 +1,35 @@
 package com.duybui.basemvvmkotlin.data.repo
 
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.LiveData
+import androidx.paging.LivePagedListBuilder
+import androidx.paging.PagedList
+import com.duybui.basemvvmkotlin.data.datasource.PostsDataSourceFactory
+import com.duybui.basemvvmkotlin.data.datasource.PostsRemoteDataSource
 import com.duybui.basemvvmkotlin.data.local.RoomDAO
-import com.duybui.basemvvmkotlin.data.model.RedditApiResponse
-import com.duybui.basemvvmkotlin.data.model.User
-import com.duybui.basemvvmkotlin.data.network.ApiInterface
+import com.duybui.basemvvmkotlin.data.model.RedditPost
+import com.duybui.basemvvmkotlin.data.network.resultLiveDataWithoutLocal
+import com.duybui.basemvvmkotlin.utils.pagedListConfig
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import retrofit2.Response
 
-class DataRepository(val apiInterface: ApiInterface) {
-    fun getRandomUser(number: Int): MutableLiveData<List<User>> {
-        val data = MutableLiveData<List<User>>()
+class DataRepository(val postsRemoteDataSource: PostsRemoteDataSource, val roomDAO: RoomDAO) {
 
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
-                var userResponse = apiInterface.getRandomUser(number)
-                withContext(Dispatchers.Main) {
-                    data.value = userResponse.data
-                }
-            } catch (e: Exception) {
-                println(e.toString())
-            }
-        }
-        return data
+    fun observePosts(isConnectivityAvailable: Boolean, coroutineScope: CoroutineScope) =
+        observeRemotePosts(coroutineScope)
+
+    private fun observeRemotePosts(ioCoroutineScope: CoroutineScope)
+            : LiveData<PagedList<RedditPost>> {
+        val postsDataSourceFactory =
+            PostsDataSourceFactory(
+                postsRemoteDataSource = postsRemoteDataSource,
+                scope = ioCoroutineScope
+            )
+        return LivePagedListBuilder(
+            postsDataSourceFactory,
+            pagedListConfig()
+        ).build()
     }
 
-    suspend fun getPosts(
-        loadSize: Int,
-        after: String?,
-        before: String?
-    ): Response<RedditApiResponse> {
-        return apiInterface.fetchPosts(loadSize, after, before)
-    }
+    fun getUsers(results: Int) =
+        resultLiveDataWithoutLocal(networkCall = { postsRemoteDataSource.getRandomUser(results) })
+
 }

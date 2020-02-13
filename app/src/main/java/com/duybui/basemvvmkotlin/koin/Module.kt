@@ -3,11 +3,11 @@ package com.duybui.basemvvmkotlin.koin
 import android.app.Application
 import android.content.Context
 import androidx.room.Room
+import com.duybui.basemvvmkotlin.data.datasource.PostsRemoteDataSource
 import com.duybui.basemvvmkotlin.data.local.MVVMDatabase
 import com.duybui.basemvvmkotlin.data.local.RoomDAO
 import com.duybui.basemvvmkotlin.data.network.ApiInterface
 import com.duybui.basemvvmkotlin.data.repo.DataRepository
-import com.duybui.basemvvmkotlin.ui.base.BaseActivity
 import com.duybui.basemvvmkotlin.ui.reddit.RedditViewModel
 import com.duybui.basemvvmkotlin.ui.users.UserViewModel
 import com.duybui.basemvvmkotlin.utils.AppConstants
@@ -61,6 +61,10 @@ val apiModule = module {
         return retrofit.create(ApiInterface::class.java)
     }
 
+    fun getPostsRemoteDataSource(apiInterface: ApiInterface): PostsRemoteDataSource {
+        return PostsRemoteDataSource(apiInterface)
+    }
+
 
     single {
         provideRetrofit(get(), get())
@@ -81,10 +85,14 @@ val apiModule = module {
     single {
         getAPIInterface(get())
     }
+
+    single {
+        getPostsRemoteDataSource(get())
+    }
 }
 
 val repositoryModule = module {
-    factory { DataRepository(get()) }
+    factory { DataRepository(get(), get()) }
 }
 
 val localDatabaseModule = module {
