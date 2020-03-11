@@ -7,6 +7,8 @@ import com.duybui.basemvvmkotlin.data.network.NetworkState
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.zip
 import kotlinx.coroutines.launch
 
 class PostsDataSource(val postsRemoteDataSource: PostsRemoteDataSource, val scope: CoroutineScope) :
@@ -24,8 +26,15 @@ class PostsDataSource(val postsRemoteDataSource: PostsRemoteDataSource, val scop
         after: String?,
         callback: (List<RedditPost>, String?, String?) -> Unit
     ) {
+
         scope.launch(getJobErrorHandle() + supervisorJob) {
             val data = postsRemoteDataSource.getPosts(loadSize, after, before)
+//            val dateFlow = flowOf(postsRemoteDataSource.getPosts(loadSize, after, before))
+//            val timeFlow = flowOf(postsRemoteDataSource.getPosts(loadSize, after, before))
+//
+//            //zip
+//            val zippedFlow = dateFlow.zip(timeFlow){date, time ->
+//            }
             if (data.status == NetworkState.SUCCESS) {
                 val result = data.data
                 val listing = result?.data

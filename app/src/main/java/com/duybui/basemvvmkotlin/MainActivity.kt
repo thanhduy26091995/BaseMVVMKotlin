@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.duybui.basemvvmkotlin.data.local.SharedPrefData
 import com.duybui.basemvvmkotlin.data.network.NetworkState
 import com.duybui.basemvvmkotlin.ui.base.BaseActivity
 import com.duybui.basemvvmkotlin.ui.base.ServerErrorDialogFragment
@@ -52,18 +53,19 @@ class MainActivity : BaseActivity() {
             redditPostsAdapter.submitList(it)
         })
 
-//       userViewModel.getRandomUser(10).observe(this, Observer {
-//           when (it.status){
-//               NetworkState.SUCCESS -> {
-//                   userAdapter.setData(it?.data?.data)
-//                   userAdapter.notifyDataSetChanged()
-//                   println(it.data?.data?.size)
-//               }
-//               NetworkState.FAIL -> {
-//                   ServerErrorDialogFragment.newInstance(null, it.message).show(supportFragmentManager, "Error")
-//               }
-//           }
-//       })
+        userViewModel.getRandomUser(10).observe(this, Observer {
+            when (it.status) {
+                NetworkState.SUCCESS -> {
+                    userAdapter.setData(it?.data?.data)
+                    userAdapter.notifyDataSetChanged()
+                    println(it.data?.data?.size)
+                }
+                NetworkState.FAIL -> {
+                    ServerErrorDialogFragment.newInstance(null, it.message)
+                        .show(supportFragmentManager, "Error")
+                }
+            }
+        })
 
         userViewModel.getRandomUserWithLocal(10).observe(this, Observer {
             when (it.status) {
@@ -88,6 +90,8 @@ class MainActivity : BaseActivity() {
 //                ServerErrorDialogFragment.newInstance(null, error).show(supportFragmentManager, "A")
 //            }
 //        })
+
+        Log.d("ABC", SharedPrefData.getInstance(this).getString(SharedPrefData.KEY.PASSWORD))
     }
 
     private fun setupRecyclerView() {

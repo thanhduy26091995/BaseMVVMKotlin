@@ -28,7 +28,6 @@ class ServerErrorDialogFragment : DialogFragment() {
             R.string.server_error_dialog_button_caption,
             { dialog, which -> dismiss() }
         )
-
         return alertDialogBuilder.create()
     }
 

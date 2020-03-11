@@ -11,7 +11,7 @@ android {
     buildToolsVersion "29.0.0"
     defaultConfig {
         applicationId "com.duybui.basemvvmkotlin"
-        minSdkVersion 22
+        minSdkVersion 23
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
@@ -55,6 +55,10 @@ def rxJavaVersion = "2.1.1"
 def room = '2.2.0-alpha01'
 def room_compiler = '1.1.1'
 def kotlinCoroutineVersion = "1.3.0-M2"
+def material_version = '1.2.0-alpha01'
+def  security_crypto_version = '1.0.0-alpha02'
+def eventBus = '3.1.1'
+
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
@@ -68,6 +72,8 @@ dependencies {
 
     //design
     implementation 'androidx.recyclerview:recyclerview:1.0.0-beta01'
+    // Material
+    implementation "com.google.android.material:material:$material_version"
     //Retrofit
     implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
     implementation "com.squareup.retrofit2:converter-gson:$retrofitVersion"
@@ -95,7 +101,7 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
     //event bus
-    implementation 'org.greenrobot:eventbus:3.1.1'
+    implementation "org.greenrobot:eventbus:$eventBus"
     //custom font
     implementation 'uk.co.chrisjenx:calligraphy:2.3.0'
 
@@ -108,6 +114,9 @@ dependencies {
     implementation "org.koin:koin-android:2.0.1"
     implementation 'org.koin:koin-androidx-viewmodel:2.0.1'
     implementation 'org.koin:koin-androidx-scope:2.0.1'
+
+    //security
+    implementation "androidx.security:security-crypto:$security_crypto_version"
 }
 androidExtensions {
     experimental = true
