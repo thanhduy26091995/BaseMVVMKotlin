@@ -24,7 +24,7 @@ fun <T, A> resultLiveData(
         if (responseStatus.status == NetworkState.SUCCESS) {
             saveCallResult(responseStatus.data!!)
         } else if (responseStatus.status == NetworkState.FAIL) {
-            emit(Result.error<T>(responseStatus.message!!))
+            emit(Result.error<T>(responseStatus.message!!, responseStatus.code))
             emitSource(source)
         }
     }
@@ -39,6 +39,6 @@ fun <T> resultLiveDataWithoutLocal(
         if (responseStatus.status == NetworkState.SUCCESS) {
             emit(Result.success(responseStatus.data!!))
         } else if (responseStatus.status == NetworkState.FAIL) {
-            emit(Result.error<T>(responseStatus.message!!))
+            emit(Result.error<T>(responseStatus.message!!, responseStatus.code))
         }
     }

@@ -14,13 +14,13 @@ abstract class BaseDataSource {
                     return Result.success(body)
                 }
             }
-            return error(response.message())
+            return error(response.message(), response.code())
         } catch (e: Exception) {
-            return error(e.message ?: e.toString())
+            return error(e.message ?: e.toString(), 404)
         }
     }
 
-    private fun <T> error(message: String): Result<T> {
-        return Result.error(message)
+    private fun <T> error(message: String, code: Int): Result<T> {
+        return Result.error(message, code)
     }
 }

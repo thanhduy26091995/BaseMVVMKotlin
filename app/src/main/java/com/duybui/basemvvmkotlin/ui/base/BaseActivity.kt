@@ -47,4 +47,9 @@ abstract class BaseActivity : AppCompatActivity() {
     override fun attachBaseContext(newBase: Context) {
         super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase))
     }
+
+    protected fun handleServerError(title: String?, body: String?, code: Int) {
+        ServerErrorDialogFragment.newInstance(title, body, code)
+            .show(supportFragmentManager, "Error")
+    }
 }

@@ -1,13 +1,10 @@
 package com.duybui.basemvvmkotlin
 
 import android.os.Bundle
-import android.util.Log
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.duybui.basemvvmkotlin.data.local.SharedPrefData
 import com.duybui.basemvvmkotlin.data.network.NetworkState
 import com.duybui.basemvvmkotlin.ui.base.BaseActivity
-import com.duybui.basemvvmkotlin.ui.base.ServerErrorDialogFragment
 import com.duybui.basemvvmkotlin.ui.reddit.RedditPostsAdapter
 import com.duybui.basemvvmkotlin.ui.reddit.RedditViewModel
 import com.duybui.basemvvmkotlin.ui.users.UserAdapter
@@ -22,7 +19,6 @@ class MainActivity : BaseActivity() {
 
     //    @Inject
 //    lateinit var viewModelFactory: ViewModelFactory
-    @Inject
     lateinit var userAdapter: UserAdapter
 
     var redditPostsAdapter = RedditPostsAdapter()
@@ -58,11 +54,9 @@ class MainActivity : BaseActivity() {
                 NetworkState.SUCCESS -> {
                     userAdapter.setData(it?.data?.data)
                     userAdapter.notifyDataSetChanged()
-                    println(it.data?.data?.size)
                 }
                 NetworkState.FAIL -> {
-                    ServerErrorDialogFragment.newInstance(null, it.message)
-                        .show(supportFragmentManager, "Error")
+                    handleServerError(null, it.message, it.code)
                 }
             }
         })
@@ -74,24 +68,10 @@ class MainActivity : BaseActivity() {
                     userAdapter.notifyDataSetChanged()
                 }
                 NetworkState.FAIL -> {
-                    ServerErrorDialogFragment.newInstance(null, it.message)
-                        .show(supportFragmentManager, "Error")
+                    handleServerError(null, it.message, it.code)
                 }
             }
         })
-
-//        redditViewModel.networkState?.observe(this, Observer {
-//            println(it.toString())
-//        })
-
-        //listen error
-//        userViewModel.error.observe(this, Observer { error ->
-//            error?.let {
-//                ServerErrorDialogFragment.newInstance(null, error).show(supportFragmentManager, "A")
-//            }
-//        })
-
-        Log.d("ABC", SharedPrefData.getInstance(this).getString(SharedPrefData.KEY.PASSWORD))
     }
 
     private fun setupRecyclerView() {
