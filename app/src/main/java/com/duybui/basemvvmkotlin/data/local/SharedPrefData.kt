@@ -9,10 +9,11 @@ import com.duybui.basemvvmkotlin.utils.SingletonHolder
 private const val ENCRYPTED_PREFS_FILE_NAME = "default_prefs"
 
 
-class SharedPrefData private constructor(context: Context) {
+class SharedPrefData(context: Context) {
 
     enum class KEY {
-        PASSWORD
+        PASSWORD,
+        THEME
     }
 
     private val sharedPreferences by lazy {
@@ -35,9 +36,7 @@ class SharedPrefData private constructor(context: Context) {
         sharedPreferences.edit().putString(key, value).apply()
     }
 
-    fun getString(key: KEY): String? {
-        return sharedPreferences.getString(key.name, "")
+    fun getString(key: KEY, default: String?): String? {
+        return sharedPreferences.getString(key.name, default)
     }
-
-    companion object : SingletonHolder<SharedPrefData, Context>(::SharedPrefData)
 }
