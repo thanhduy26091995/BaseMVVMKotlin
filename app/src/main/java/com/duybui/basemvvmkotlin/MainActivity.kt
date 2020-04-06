@@ -11,6 +11,7 @@ import com.duybui.basemvvmkotlin.data.model.themeFromStorageKey
 import com.duybui.basemvvmkotlin.data.network.NetworkState
 import com.duybui.basemvvmkotlin.ui.MainViewModel
 import com.duybui.basemvvmkotlin.ui.base.BaseActivity
+import com.duybui.basemvvmkotlin.ui.dialog.DialogDSLBuilder.Companion.dialog
 import com.duybui.basemvvmkotlin.ui.reddit.RedditPostsAdapter
 import com.duybui.basemvvmkotlin.ui.reddit.RedditViewModel
 import com.duybui.basemvvmkotlin.ui.users.UserAdapter
@@ -83,6 +84,8 @@ class MainActivity : BaseActivity() {
         mainViewModel.currentTheme.observe(this, Observer {
             updateForTheme(themeFromStorageKey(it))
         })
+
+        handleServerError("HAHA", "HIHI", 404, this)
     }
 
     private fun setupRecyclerView() {
