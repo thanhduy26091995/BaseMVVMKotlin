@@ -1,6 +1,7 @@
 package com.duybui.basemvvmkotlin
 
 import android.os.Bundle
+import android.text.TextUtils
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -20,6 +21,7 @@ import com.duybui.basemvvmkotlin.utils.updateForTheme
 import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import javax.inject.Inject
+import kotlin.properties.Delegates
 
 class MainActivity : BaseActivity() {
     override val layoutRes: Int
@@ -85,7 +87,14 @@ class MainActivity : BaseActivity() {
             updateForTheme(themeFromStorageKey(it))
         })
 
-        handleServerError("HAHA", "HIHI", 404, this)
+
+        //observer value changes
+        var status: String by Delegates.observable("") { property, oldValue, newValue ->
+            if (!TextUtils.isEmpty(oldValue) && !TextUtils.isEmpty(newValue)) {
+
+            }
+        }
+        status = "asda"
     }
 
     private fun setupRecyclerView() {
