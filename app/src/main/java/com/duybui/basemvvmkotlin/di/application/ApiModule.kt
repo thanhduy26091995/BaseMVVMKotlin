@@ -2,6 +2,7 @@ package com.duybui.basemvvmkotlin.di.application
 
 
 import android.app.Application
+import com.duybui.basemvvmkotlin.data.datasource.PostsRemoteDataSource
 import com.duybui.basemvvmkotlin.data.local.RoomDAO
 import com.duybui.basemvvmkotlin.data.network.ApiInterface
 import com.duybui.basemvvmkotlin.data.repo.DataRepository
@@ -65,6 +66,21 @@ class ApiModule {
     @Provides
     internal fun getAPIInterface(retrofit: Retrofit): ApiInterface {
         return retrofit.create(ApiInterface::class.java)
+    }
+
+    @Singleton
+    @Provides
+    internal fun getPostsRemoteDataSource(apiInterface: ApiInterface): PostsRemoteDataSource {
+        return PostsRemoteDataSource(apiInterface)
+    }
+
+    @Singleton
+    @Provides
+    internal fun provideDataRepository(
+        postsRemoteDataSource: PostsRemoteDataSource,
+        roomDAO: RoomDAO
+    ): DataRepository {
+        return DataRepository(postsRemoteDataSource, roomDAO)
     }
 
 //    @Singleton

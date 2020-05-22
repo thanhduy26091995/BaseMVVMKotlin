@@ -6,12 +6,14 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.duybui.basemvvmkotlin.data.model.Theme
 import com.duybui.basemvvmkotlin.data.model.themeFromStorageKey
 import com.duybui.basemvvmkotlin.data.network.NetworkState
 import com.duybui.basemvvmkotlin.ui.MainViewModel
 import com.duybui.basemvvmkotlin.ui.base.BaseActivity
+import com.duybui.basemvvmkotlin.ui.base.ViewModelFactory
 import com.duybui.basemvvmkotlin.ui.dialog.DialogDSLBuilder.Companion.dialog
 import com.duybui.basemvvmkotlin.ui.reddit.RedditPostsAdapter
 import com.duybui.basemvvmkotlin.ui.reddit.RedditViewModel
@@ -27,25 +29,24 @@ class MainActivity : BaseActivity() {
     override val layoutRes: Int
         get() = R.layout.activity_main
 
-    //    @Inject
-//    lateinit var viewModelFactory: ViewModelFactory
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+    @Inject
     lateinit var userAdapter: UserAdapter
 
     var redditPostsAdapter = RedditPostsAdapter()
 
-//    private val userViewModel by lazy {
-//        ViewModelProviders.of(this, viewModelFactory).get(UserViewModel::class.java)
-//    }
+    private val redditViewModel by lazy {
+        ViewModelProviders.of(this, viewModelFactory).get(RedditViewModel::class.java)
+    }
 
-
-    //    private val userViewModel by viewModel<UserViewModel>()
-    private val redditViewModel by viewModel<RedditViewModel>()
-    private val userViewModel by viewModel<UserViewModel>()
-    private val mainViewModel by viewModel<MainViewModel>()
+    private val mainViewModel by lazy {
+        ViewModelProviders.of(this, viewModelFactory).get(MainViewModel::class.java)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        presentationComponent.inject(this)
+        presentationComponent.inject(this)
 
         setupRecyclerView()
 //        userViewModel.getRandomUser(10)

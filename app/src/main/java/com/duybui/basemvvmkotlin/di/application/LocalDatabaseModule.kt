@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.duybui.basemvvmkotlin.data.local.MVVMDatabase
 import com.duybui.basemvvmkotlin.data.local.RoomDAO
+import com.duybui.basemvvmkotlin.data.local.SharedPrefData
 import dagger.Module
 import dagger.Provides
 
@@ -21,5 +22,11 @@ class LocalDatabaseModule {
     @Provides
     internal fun provideUserDao(mvvmDatabase: MVVMDatabase): RoomDAO {
         return mvvmDatabase.userDAO()
+    }
+
+    @Singleton
+    @Provides
+    internal fun provideSharedPrefData(context: Context): SharedPrefData{
+        return SharedPrefData(context)
     }
 }
